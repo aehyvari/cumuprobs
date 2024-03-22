@@ -5,14 +5,14 @@ import random
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print("Usage: %s <data-file1> [...] output.tex" % sys.argv[0])
+        print("Usage: %s <data-file1> [<data-file2> [...]]" % sys.argv[0])
         sys.exit(1)
     output = sys.argv[-1]
     use_log = True
     plots = []
     idx = 0
     global_min = None
-    for name in sys.argv[1:-1]:
+    for name in sys.argv[1:]:
         lines = open(name).readlines()
         data = list(map(float, filter(lambda x: x[0] != '#', lines)))
 
@@ -32,8 +32,10 @@ if __name__ == '__main__':
         idx += 1
 
     print('#!/usr/bin/env gnuplot')
-    print('set term cairolatex pdf standalone size 5cm,5cm')
-    print('set output "%s"' % output)
+#    print('set term cairolatex pdf standalone size 5cm,5cm')
+    print('set term pngcairo')
+    print('set size 0.6,0.6')
+#    print('set output "%s"' % output)
     print('set xlabel "time"')
     print('set ylabel "probability"')
     if (use_log):
