@@ -5,7 +5,7 @@ import random
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print "Usage: %s <data-file1> [...] output.tex" % sys.argv[0]
+        print("Usage: %s <data-file1> [...] output.tex" % sys.argv[0])
         sys.exit(1)
     output = sys.argv[-1]
     use_log = True
@@ -14,7 +14,8 @@ if __name__ == '__main__':
     global_min = None
     for name in sys.argv[1:-1]:
         lines = open(name).readlines()
-        data = map(float, filter(lambda x: x[0] != '#', lines))
+        data = list(map(float, filter(lambda x: x[0] != '#', lines)))
+
         cumu = cumuprob_ops.Prob(data, True)
         min_v = min(data)
         max_v = max(data)
@@ -30,28 +31,32 @@ if __name__ == '__main__':
             plots[-1][1].append((t, cumu.get_qt(t)))
         idx += 1
 
-    print '#!/usr/bin/env gnuplot'
-    print 'set term cairolatex pdf standalone size 5cm,5cm'
-    print 'set output "%s"' % output
-    print 'set xlabel "time"'
-    print 'set ylabel "probability"'
+    print('#!/usr/bin/env gnuplot')
+    print('set term cairolatex pdf standalone size 5cm,5cm')
+    print('set output "%s"' % output)
+    print('set xlabel "time"')
+    print('set ylabel "probability"')
     if (use_log):
-        print 'set logscale x'
+        print('set logscale x')
 #        print 'set logscale y'
-    print 'set key right bottom'
-    print 'set xrange [%f:]' % global_min
+    print('set key right bottom')
+    print('set xrange [%f:]' % global_min)
 #    if (not use_log):
 #        print 'set xrange [0:]'
-    print 'set yrange [0:1]'
-    print 'set pointsize 1.5'
+    print('set yrange [0:1]')
+    print('set pointsize 1.5')
 
     for i in range(0, len(plots)):
         el = plots[i]
         xoffs = el[1][-1][0]*1.01
         yoffs = 1.01 + float(i) / len(plots)
-        print 'set arrow from %f,%f to %f, graph %f nohead lc %d' % (el[1][-1][0], 1, el[1][-1][0]+xoffs, yoffs, el[0])
-        print 'set label "%s" at %f,%f' % (i, el[1][-1][0]+xoffs, yoffs)
+        print('set arrow from %f,%f to %f, graph %f nohead lc %d' %
+              (el[1][-1][0], 1, el[1][-1][0]+xoffs, yoffs, el[0]))
+        print('set label "%s" at %f,%f' % (i, el[1][-1][0]+xoffs,
+                                           yoffs))
 #    print 'plot %s' % (", ".join([('"-" title "%s" with lines' % x[0]) for x in plots]))
-    print 'plot %s' % (", ".join([('"-" title "" with lines lc %d' % x[0]) for x in plots]))
-    print "\ne\n".join(["\n".join(map(lambda y: "%f %f" % (y[0], y[1]), x[1])) for x in plots])
+    print('plot %s' % (", ".join([('"-" title "" with lines lc %d' %
+                                   x[0]) for x in plots])))
+    print("\ne\n".join(["\n".join(map(lambda y: "%f %f" % (y[0], y[1]),
+                                      x[1])) for x in plots]))
 
